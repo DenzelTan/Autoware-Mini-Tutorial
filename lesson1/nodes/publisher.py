@@ -5,10 +5,10 @@ from std_msgs.msg import String
 
 class Publisher:
     def __init__(self):
-        # Internal variables
         # Parameters
         self.message = rospy.get_param('~message', 'Hello World!')
-        self.rate = rospy.get_param('~rate', 2.0)
+        self.publish_rate = rospy.get_param('~rate', 2.0)
+        # Internal variables
         self.rate = rospy.Rate(self.rate)
         # Publishers
         self.pub = rospy.Publisher('/message', String, queue_size=10)

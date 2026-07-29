@@ -35,8 +35,6 @@ class Localizer:
         self.br = TransformBroadcaster()
 
     def transform_coordinates(self, msg):
-        # print(msg.latitude, msg.longitude)
-
         utm_x, utm_y = self.transformer.transform(
             msg.latitude,
             msg.longitude
@@ -44,8 +42,6 @@ class Localizer:
 
         x_subtracted = utm_x - self.origin_x
         y_subtracted = utm_y - self.origin_y
-
-        # print(x_subtracted,y_subtracted)
 
         azimuth_correction = self.utm_projection.get_factors(msg.longitude, msg.latitude).meridian_convergence
         yaw = self.convert_azimuth_to_yaw(math.radians(msg.azimuth - azimuth_correction))
@@ -74,7 +70,7 @@ class Localizer:
         t_msg.child_frame_id = "base_link"
         t_msg.transform.translation.x = x_subtracted
         t_msg.transform.translation.y = y_subtracted
-        t_msg.transform.translation.z = msg.height - self.undulation
+        t_msg.transform.translation.z = current_pose_msg.pose.position.z
         t_msg.transform.rotation = orientation
         self.br.sendTransform(t_msg)
 
