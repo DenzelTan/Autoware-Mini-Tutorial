@@ -9,7 +9,7 @@ from geometry_msgs.msg import PoseStamped
 from tf.transformations import euler_from_quaternion
 
 from shapely.geometry import LineString, Point
-from shapely import prepare, distance
+from shapely import prepare
 from scipy.interpolate import interp1d
 
 class PurePursuitFollower:
@@ -57,11 +57,10 @@ class PurePursuitFollower:
         if self.path_linestring is None or self.distance_to_velocity_interpolator is None:
             steering_angle = 0.0
             linear_velocity = 0.0
-            linear_acceleration = -3.0
+            linear_acceleration = 0.0
         else:
             current_pose = Point([msg.pose.position.x, msg.pose.position.y])
             d_ego_from_path_start = self.path_linestring.project(current_pose)
-            print(d_ego_from_path_start)
 
             # Get heading from current pose orientation
             _, _, heading = euler_from_quaternion([msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w])
@@ -76,13 +75,14 @@ class PurePursuitFollower:
             alpha = lookahead_heading - heading
             steering_angle = np.arctan2(2.0*self.wheel_base*np.sin(alpha),ld)
             linear_velocity = float(self.distance_to_velocity_interpolator(d_ego_from_path_start))
+            linear_acceleration = 0.0
 
         vehicle_cmd = VehicleCommand()
         vehicle_cmd.header.stamp = msg.header.stamp
         vehicle_cmd.header.frame_id = "base_link"
         vehicle_cmd.steering_angle = steering_angle
         vehicle_cmd.speed = linear_velocity
-        vehicle_cmd.acceleration = 0
+        vehicle_cmd.acceleration = linear_acceleration
         self.vehicle_cmd_pub.publish(vehicle_cmd)
 
     def run(self):
