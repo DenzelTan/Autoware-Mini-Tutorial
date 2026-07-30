@@ -9,7 +9,7 @@ class Publisher:
         self.message = rospy.get_param('~message', 'Hello World!')
         self.publish_rate = rospy.get_param('~rate', 2.0)
         # Internal variables
-        self.rate = rospy.Rate(self.rate)
+        self.rate = rospy.Rate(self.publish_rate)
         # Publishers
         self.pub = rospy.Publisher('/message', String, queue_size=10)
 
