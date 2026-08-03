@@ -53,10 +53,6 @@ class ClusterDetector:
             points_copy = points_copy.dot(tf_matrix.T)
             points[:, :3] = points_copy[:, :3]
 
-        # TODO 3: Create a DetectedObjectArray and iterate over cluster labels.
-        #         - Create DetectedObjectArray with header (stamp from msg, frame_id from self.output_frame)
-        #         - Loop over cluster labels and assign correct points to each cluster
-        #         - Skip clusters with fewer points than self.min_cluster_size
         result_object_array = DetectedObjectArray()
         result_object_array.header.stamp = msg.header.stamp
         result_object_array.header.frame_id = self.output_frame
