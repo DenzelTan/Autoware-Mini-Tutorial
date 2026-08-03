@@ -57,7 +57,7 @@ class PurePursuitFollower:
         if self.path_linestring is None or self.distance_to_velocity_interpolator is None:
             steering_angle = 0.0
             linear_velocity = 0.0
-            linear_acceleration = 0.0
+            linear_acceleration = -3.0
         else:
             current_pose = Point([msg.pose.position.x, msg.pose.position.y])
             d_ego_from_path_start = self.path_linestring.project(current_pose)
