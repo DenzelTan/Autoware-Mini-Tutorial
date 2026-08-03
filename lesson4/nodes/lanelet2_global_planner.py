@@ -112,7 +112,7 @@ class GlobalPlanner:
 
         for j, lanelet in enumerate(laneletseq):
             # Get speed from lanelet attribute or use global speed limit. The speed limit is in km/h, convert to m/s for the Waypoint message.
-            speed = ((self.speed_limit*1000)/3600)
+            speed = min(float(lanelet.attributes['speed_ref']), self.speed_limit)
 
             # Iterate through the centerline points and create waypoints. 
             for i, point in enumerate(lanelet.centerline):
@@ -126,9 +126,6 @@ class GlobalPlanner:
                 waypoint.speed = speed
                 waypoints.append(waypoint)
 
-        # TODO 5: Sync path end with goal point.
-        #         The path end and goal point may not align because findNearest()
-        #         returns a full lanelet. Find your own solution — see README for ideas.
         if len(waypoints) >= 2 and self.goal_point is not None:
             goal = np.array([self.goal_point.x, self.goal_point.y])
             for i in range(len(waypoints) - 1):
@@ -170,6 +167,10 @@ class GlobalPlanner:
             goal_waypoint.position.y = closest_point[1]
             goal_waypoint.position.z = waypoints[-1].position.z
             goal_waypoint.speed = 0.0
+
+            self.goal_point.x = goal_waypoint.position.x
+            self.goal_point.y = goal_waypoint.position.y
+            self.goal_point.z = goal_waypoint.position.z
 
             waypoints.append(goal_waypoint)
 
