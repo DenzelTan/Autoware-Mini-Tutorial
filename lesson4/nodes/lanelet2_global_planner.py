@@ -112,7 +112,7 @@ class GlobalPlanner:
 
         for j, lanelet in enumerate(laneletseq):
             # Get speed from lanelet attribute or use global speed limit. The speed limit is in km/h, convert to m/s for the Waypoint message.
-            speed = min(float(lanelet.attributes['speed_ref']), self.speed_limit)
+            speed = min(float(lanelet.attributes['speed_ref']), self.speed_limit) / 3.6
 
             # Iterate through the centerline points and create waypoints. 
             for i, point in enumerate(lanelet.centerline):
