@@ -15,7 +15,6 @@ class PointsClusterer:
         self.cluster_epsilon = rospy.get_param('~cluster_epsilon')
         self.cluster_min_samples = rospy.get_param('~cluster_min_samples')
 
-        # TODO 1: Create self.clusterer using DBSCAN with the parameters above.
         self.clusterer = DBSCAN(eps=self.cluster_epsilon, min_samples=self.cluster_min_samples)
 
         # Publishers
@@ -29,6 +28,10 @@ class PointsClusterer:
     def points_callback(self, msg):
         data = numpify(msg)
         points = structured_to_unstructured(data[['x', 'y', 'z']], dtype=np.float32)
+
+        if points.shape[0] == 0:
+            return
+
         labels = self.clusterer.fit_predict(points)
 
         # Concatenate points with labels

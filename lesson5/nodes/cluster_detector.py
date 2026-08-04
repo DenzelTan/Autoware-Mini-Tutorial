@@ -85,9 +85,9 @@ class ClusterDetector:
             obj.label = "unknown"
             obj.color = BLUE80P
             obj.valid = True
-            obj.centroid.x = (centroid[0])
-            obj.centroid.y = (centroid[1])
-            obj.centroid.z = (centroid[2])
+            obj.centroid.x = centroid[0]
+            obj.centroid.y = centroid[1]
+            obj.centroid.z = centroid[2]
             obj.convex_hull = convex_hull_points
             obj.position_reliable = True
             obj.velocity_reliable = False
