@@ -170,7 +170,6 @@ class GlobalPlanner:
             goal_waypoint = Waypoint()
             goal_waypoint.position.x = closest_point[0]
             goal_waypoint.position.y = closest_point[1]
-            goal_waypoint.position.z = closest_point[2]
             goal_waypoint.speed = 0.0
 
             self.goal_point.x = goal_waypoint.position.x
