@@ -162,6 +162,7 @@ class GlobalPlanner:
                     closest_distance = distance
                     closest_segment = i
                     closest_point = projected_point
+                    closest_z = (waypoints[i].position.z + t * (waypoints[i + 1].position.z - waypoints[i].position.z))
 
             # Keep only waypoints before the goal segment
             waypoints = waypoints[:closest_segment + 1]
@@ -170,6 +171,7 @@ class GlobalPlanner:
             goal_waypoint = Waypoint()
             goal_waypoint.position.x = closest_point[0]
             goal_waypoint.position.y = closest_point[1]
+            goal_waypoint.position.z = closest_z
             goal_waypoint.speed = 0.0
 
             self.goal_point.x = goal_waypoint.position.x
