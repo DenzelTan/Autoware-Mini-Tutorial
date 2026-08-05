@@ -78,39 +78,19 @@ class SimpleSpeedPlanner:
             collision_points_shapely = shapely.points(structured_to_unstructured(collision_points[['x', 'y', 'z']]))
             collision_point_distances = np.array([local_path_linestring.project(cp) for cp in collision_points_shapely])
 
-            calculated_target_velocities = np.sqrt(
-                2 * self.default_deceleration * collision_point_distances
-            )
-
-            target_velocity = np.min(calculated_target_velocities)
-
-            for wp in local_path_msg.waypoints:
-                wp.speed = min(target_velocity, wp.speed)
-
             collision_point_braking_distances = (
                 collision_point_distances - self.distance_to_car_front
             )
 
             target_distances = collision_point_braking_distances - collision_points["distance_to_stop"]
             target_distances = np.maximum(target_distances, 0.0)
-            calculated_target_velocities = np.sqrt(2 * self.default_deceleration * target_distances)
 
             collision_point_path_headings = [self.get_heading_at_distance(local_path_linestring, d) for d in collision_point_distances]
             collision_point_speeds = np.array([self.project_vector_to_heading(heading, Vector3(vx, vy, vz))
                                         for heading, (vx, vy, vz) in zip(collision_point_path_headings, collision_points[['vx', 'vy', 'vz']])])
 
-            # TODO 6: Modify target velocity with reaction time.
-            #         - Subtract braking_reaction_time * abs(collision_point_speeds)
-            #           from target distances
-
             target_distances = target_distances - self.braking_reaction_time * np.abs(collision_point_speeds)
             target_distances = np.maximum(target_distances, 0.0)
-
-            # TODO 5: Account for collision point speed in target velocity.
-            #         - Use full formula: v = max(0, approaching_speed + sqrt(max(0, v0^2 + 2*a*s)))
-            #           where approaching_speed = min(v0, 0) handles objects moving toward us
-            #         - Find the collision point with the minimum target velocity (not just closest)
-            #         - Set target_object_speed from the collision point speeds
 
             approaching_speeds = np.minimum(collision_point_speeds, 0)
             calculated_target_velocities = np.maximum(0,
@@ -128,12 +108,6 @@ class SimpleSpeedPlanner:
 
             for wp in local_path_msg.waypoints:
                 wp.speed = min(target_velocity, wp.speed)
-
-            target_object_distance = collision_point_braking_distances[minimum_index]
-
-            stopping_point_distance = collision_point_distances[minimum_index] - collision_points["distance_to_stop"][minimum_index]
-
-            collision_point_category = collision_points[minimum_index]["category"]
 
             path = Path()
             path.header = local_path_msg.header
