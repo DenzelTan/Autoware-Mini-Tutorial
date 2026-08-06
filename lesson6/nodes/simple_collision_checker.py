@@ -112,24 +112,23 @@ class SimpleCollisionChecker:
                 object_polygon = shapely.Polygon(np.asarray(obj.convex_hull, dtype=np.float32).reshape(-1, 3)[:, :2])
                 if local_path_buffer.intersects(object_polygon):
                     intersection = local_path_buffer.intersection(object_polygon)
-                    if not intersection.is_empty:
-                        intersection_points = shapely.get_coordinates(intersection)
-                        object_speed = math.hypot(obj.velocity.x, obj.velocity.y)
-                        for x, y in intersection_points:
-                            collision_points = np.append(
-                                collision_points,
-                                np.array([(
-                                    x,
-                                    y,
-                                    obj.centroid.z,
-                                    obj.velocity.x,
-                                    obj.velocity.y,
-                                    obj.velocity.z,
-                                    self.braking_safety_distance_obstacle,
-                                    np.inf,
-                                    3 if object_speed < self.stopped_speed_limit else 4,
-                                )], dtype=DTYPE)
-                            )
+                    intersection_points = shapely.get_coordinates(intersection)
+                    object_speed = math.hypot(obj.velocity.x, obj.velocity.y)
+                    for x, y in intersection_points:
+                        collision_points = np.append(
+                            collision_points,
+                            np.array([(
+                                x,
+                                y,
+                                obj.centroid.z,
+                                obj.velocity.x,
+                                obj.velocity.y,
+                                obj.velocity.z,
+                                self.braking_safety_distance_obstacle,
+                                np.inf,
+                                3 if object_speed < self.stopped_speed_limit else 4,
+                            )], dtype=DTYPE)
+                        )
 
         if goal_point is not None:
             goal_point_shapely = shapely.Point(goal_point.x, goal_point.y)

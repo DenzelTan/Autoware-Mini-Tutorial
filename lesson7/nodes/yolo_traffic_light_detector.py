@@ -217,7 +217,7 @@ class YoloTrafficLightDetector:
                     u, v = self.camera_model.project3dToPixel((point_camera.x, point_camera.y, point_camera.z))
 
                     # The projected point must be inside the camera image
-                    if not 0 <= u < self.camera_model.width and 0 <= v < self.camera_model.height:
+                    if not (0 <= u < self.camera_model.width and 0 <= v < self.camera_model.height):
                         break
 
                     # Convert the extent in metres to an extent in pixels
