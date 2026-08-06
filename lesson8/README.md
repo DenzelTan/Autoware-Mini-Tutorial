@@ -66,10 +66,34 @@ Your framework from the previous lessons is a simplified one. Remember all limit
 5. Commit and push everything, and be ready to demonstrate your failure cases at the practice session
 
 ##### Failure case 1
-...
+![alt text](image-1.png)
+Failure:
+The vehicle detects a stationary object and initially slows down or stops. However, it later moves forward and collides with the object.
+
+Possible Cause:
+The stopping distance or safety buffer around the detected object may be too small. Although the object is detected, the vehicle may stop too close to it or incorrectly determine that it is safe to continue moving.
+
+Proposed Remedy:
+Increase the braking safety distance and collision buffer for stationary objects. The vehicle should also continue tracking the object after stopping and only resume movement once the path is confirmed to be clear.
 
 ##### Failure case 2
-...
+![alt text](image-2.png)
+Failure:
+The vehicle comes to a complete stop whenever an object slightly overlaps its planned path, even when there is enough free space to safely drive around it.
+
+Possible Cause:
+The current system only detects whether an object intersects the vehicle’s path. It does not contain obstacle-avoidance or path-adjustment logic, so stopping is the only available response.
+
+Proposed Remedy:
+Add obstacle-avoidance logic that calculates the available free space around the object. When sufficient space is available, the vehicle should generate an alternative path and safely manoeuvre around the obstacle. Otherwise, it should remain stopped.
 
 ##### Failure case 3
-...
+![alt text](image-3.png)
+Failure:
+When entering a main lane from a side lane, the vehicle turns without checking for approaching traffic, even though vehicles on the main lane have priority.
+
+Possible Cause:
+The system does not currently consider road priority rules or detect conflicts with vehicles travelling along the lane being entered.
+
+Proposed Remedy:
+Add right-of-way and intersection-handling logic. When the vehicle is approaching from a lower-priority lane, it should detect approaching vehicles, estimate whether there is a safe gap, and wait until the lane is clear before completing the turn.
