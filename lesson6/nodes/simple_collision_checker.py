@@ -151,15 +151,17 @@ class SimpleCollisionChecker:
         for stop_line_id, status in stopline_statuses.items():
             if status != StopLineStatus.STATUS_STOP:
                 continue
+
             stop_line = self.stop_lines.get(stop_line_id)
             if stop_line is None:
                 continue
-            if local_path_buffer.intersects(stop_line):
-                intersection = local_path_buffer.intersection(stop_line)
+
+            if local_path_linestring.intersects(stop_line):     
+                intersection = local_path_linestring.intersection(stop_line)
+
                 if not intersection.is_empty:
-                    intersection_points = shapely.get_coordinates(intersection)
-                    for x, y in intersection_points:
-                        collision_points = np.append(collision_points,np.array([(x, y, 0.0, 0.0, 0.0, 0.0, self.braking_safety_distance_stopline, np.inf, 2)], dtype=DTYPE))
+                    x, y = shapely.get_coordinates(intersection)[0]
+                    collision_points = np.append(collision_points, np.array([(x, y, 0.0, 0.0, 0.0, 0.0, self.braking_safety_distance_stopline, np.inf, 2)], dtype=DTYPE))
 
         # Publish the collision points (an empty array means no collision points on the path)
         if len(collision_points) > 0:
